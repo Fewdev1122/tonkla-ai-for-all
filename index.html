@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>Tonkla – เรียนรู้ ทดลองงาน สร้างรายได้ ค้นพบอาชีพ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#f5f8f2; --card:#ffffff; --ink:#14231a; --muted:#52645a; --line:#d8e2d3;
+  --leaf:#2b7a2a; --leaf-soft:#e4f1de;
+  --blue:#2c6bdc; --blue-soft:#e6eefd;
+  --violet:#7a52cf; --violet-soft:#eee8fb;
+  --amber:#b97a05; --amber-soft:#fbf0d4;
+  --brick:#b03a2a; --brick-soft:#fae7e3;
+  --shadow:0 1px 0 rgba(20,35,26,.04);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#0e1511; --card:#16201a; --ink:#e8f0ea; --muted:#9bb0a2; --line:#2a392e;
+    --leaf:#7fcf6a; --leaf-soft:#1b2f1a;
+    --blue:#86adff; --blue-soft:#19253f;
+    --violet:#bda2f2; --violet-soft:#2a2142;
+    --amber:#efbb52; --amber-soft:#382d12;
+    --brick:#f08a7b; --brick-soft:#3b201c;
+  }
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-snap-type:y proximity}
+body{margin:0;background:var(--paper);color:var(--ink);
+  font-family:"IBM Plex Sans Thai","Noto Sans Thai","Sarabun","Leelawadee UI",Tahoma,sans-serif;
+  font-size:17px;line-height:1.7;-webkit-text-size-adjust:100%}
+a{color:var(--leaf)}
+:focus-visible{outline:3px solid var(--blue);outline-offset:3px;border-radius:6px}
+
+/* โครงสไลด์ */
+.slide{min-height:100svh;scroll-snap-align:start;display:flex;align-items:center;
+  padding:clamp(72px,10vh,110px) clamp(18px,5vw,72px)}
+main>.slide:nth-of-type(even){background:var(--card)}
+.wrap{width:100%;max-width:1120px;margin:0 auto}
+.kicker{margin:0 0 8px;font-size:.92rem;font-weight:600;color:var(--leaf)}
+h2{font-size:clamp(1.55rem,3.4vw,2.4rem);line-height:1.35;margin:0 0 .7em;font-weight:700;max-width:30em}
+h3{font-size:1.1rem;margin:0 0 .3em;line-height:1.4}
+p{margin:0 0 .8em}
+.lead{font-size:1.1rem;color:var(--muted);max-width:42em}
+.small{font-size:.85rem;color:var(--muted);line-height:1.55}
+.src{font-size:.78rem;color:var(--muted);line-height:1.5;margin-top:6px}
+
+/* การ์ดและกริด */
+.grid{display:grid;gap:14px}
+.g2{grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr))}
+.g3{grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr))}
+.g4{grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr))}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:16px 18px;box-shadow:var(--shadow)}
+main>.slide:nth-of-type(even) .card{background:var(--paper)}
+main>.slide:nth-of-type(odd) .card{background:var(--card)}
+.card h3{color:var(--ink)}
+.card p:last-child{margin-bottom:0}
+
+/* ป้ายสถานะ */
+.tag{display:inline-block;font-size:.74rem;font-weight:600;padding:1px 9px;border-radius:99px;line-height:1.6;white-space:nowrap}
+.t-pdf{background:var(--leaf-soft);color:var(--leaf)}
+.t-add{background:var(--amber-soft);color:var(--amber)}
+.t-tbc{background:var(--brick-soft);color:var(--brick)}
+.tbc{color:var(--brick);font-weight:600}
+
+/* 1 หน้าปก */
+.hero h1{font-size:clamp(3.2rem,11vw,7rem);line-height:1;margin:.1em 0 .15em;font-weight:700;color:var(--leaf)}
+.hero .lead{margin-bottom:1.6rem}
+.stairs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;align-items:end;margin-top:8px;max-width:860px}
+.step{border-radius:12px 12px 0 0;padding:12px 14px;font-weight:600;line-height:1.4;display:flex;align-items:flex-start;
+  border:1px solid var(--line);border-bottom:3px solid var(--leaf)}
+.step span{font-size:.78rem;font-weight:500;display:block;color:var(--muted);margin-top:2px}
+.step:nth-child(1){height:96px;background:var(--blue-soft)}
+.step:nth-child(2){height:140px;background:var(--violet-soft)}
+.step:nth-child(3){height:184px;background:var(--amber-soft)}
+.step:nth-child(4){height:228px;background:var(--leaf-soft)}
+.status{display:inline-block;margin-top:22px;font-size:.88rem;background:var(--amber-soft);color:var(--amber);
+  padding:4px 14px;border-radius:99px;font-weight:600}
+.hint{margin-top:14px;font-size:.82rem;color:var(--muted)}
+
+/* 2 ปัญหา */
+.bars{margin-top:8px}
+.bars h3{margin-bottom:10px}
+.brow{display:grid;grid-template-columns:96px 1fr;gap:12px;align-items:center;margin-bottom:12px}
+.brow>b{font-size:.95rem}
+.bar{height:26px;border-radius:6px;background:var(--line);margin:3px 0;position:relative;overflow:hidden}
+.bar i{display:flex;align-items:center;justify-content:flex-end;height:100%;padding-right:8px;font-style:normal;
+  font-size:.82rem;font-weight:700;color:#fff;border-radius:6px}
+.bar.poor i{background:var(--amber)}
+.bar.rich i{background:var(--blue)}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .bar i{color:#10180f}}
+.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:.84rem;color:var(--muted);margin-bottom:12px}
+.legend span::before{content:"";display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:6px;vertical-align:-1px}
+.legend .lp::before{background:var(--amber)}
+.legend .lr::before{background:var(--blue)}
+
+/* 3 ตัวเลข */
+.stat .big{font-size:clamp(1.9rem,4.4vw,2.8rem);font-weight:700;line-height:1.15;color:var(--leaf)}
+.stat .big small{font-size:.5em;color:var(--muted);font-weight:500}
+.stat p{margin:.3em 0 0;font-size:.93rem;line-height:1.55}
+.stat h3{margin-bottom:.1em}
+.duo{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:8px 0 10px}
+.duo>div{background:var(--paper);border-radius:12px;padding:10px 12px}
+.duo span{display:block;font-size:.8rem;color:var(--muted);line-height:1.4}
+.duo b{display:block;font-size:clamp(2.2rem,5vw,3.3rem);line-height:1.1;font-weight:700}
+.duo>div:first-child b{color:var(--amber)}
+.duo>div:last-child b{color:var(--blue)}
+
+/* 4 สาเหตุ */
+.chain{display:grid;grid-template-columns:minmax(150px,.8fr) auto minmax(0,2.2fr) auto minmax(150px,1fr);gap:12px;align-items:stretch}
+.chain .arrow{align-self:center;font-size:1.8rem;color:var(--muted)}
+.col-title{font-size:.88rem;font-weight:700;color:var(--muted);margin-bottom:8px}
+.problem{background:var(--brick-soft)!important;border-color:transparent!important}
+.problem h3{color:var(--brick)}
+.effect{background:var(--amber-soft)!important;border-color:transparent!important}
+.causes{display:grid;gap:8px}
+.cause{padding:10px 14px}
+.cause h3{font-size:.98rem;margin:0}
+.cause p{font-size:.86rem;color:var(--muted);line-height:1.5;margin:0}
+
+/* 6 Tonkla */
+.pipe{display:flex;flex-wrap:wrap;align-items:stretch;gap:8px;margin:6px 0 18px}
+.pipe .pn{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 14px;text-align:center;min-width:120px}
+.pipe .pn small{display:block;font-size:.76rem;color:var(--muted);line-height:1.4}
+.pipe .pa{align-self:center;color:var(--muted);font-size:1.2rem}
+.branch{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:12px;margin-bottom:18px}
+.gets{display:flex;flex-wrap:wrap;gap:8px}
+.chip{background:var(--leaf-soft);color:var(--leaf);padding:4px 14px;border-radius:99px;font-weight:600;font-size:.92rem}
+
+/* 7 AI Flow */
+.flow{max-width:980px;margin:6px auto 0}
+.frow{display:grid;grid-template-columns:1fr minmax(240px,340px) 1fr;gap:16px;align-items:center}
+.frow>div:empty{visibility:hidden}
+.node{background:var(--card);border:2px solid var(--line);border-radius:16px;padding:10px 16px;text-align:center;line-height:1.45}
+.node b{display:block;font-size:1.02rem}
+.node span{font-size:.84rem;color:var(--muted);display:block}
+.n-student{border-color:var(--blue);background:var(--blue-soft)}
+.n-ai{border-color:var(--violet);background:var(--violet-soft)}
+.n-db{border:2px dashed var(--leaf);background:var(--leaf-soft)}
+.n-out{border-color:var(--amber);background:var(--amber-soft)}
+.down{grid-column:2;text-align:center;color:var(--muted);font-size:1.3rem;line-height:1.5;height:30px}
+.side{border-radius:12px;padding:10px 14px;font-size:.85rem;line-height:1.5;border-left:4px solid}
+.side b{display:block;font-size:.8rem;margin-bottom:2px}
+.side.sch{border-color:var(--leaf);background:var(--leaf-soft)}
+.side.sch b{color:var(--leaf)}
+.side.org{border-color:var(--amber);background:var(--amber-soft);text-align:left}
+.side.org b{color:var(--amber)}
+.num{display:inline-block;min-width:21px;height:21px;border-radius:99px;background:var(--leaf);color:#fff;font-size:.74rem;
+  font-weight:700;text-align:center;line-height:21px;margin-right:4px}
+.num.o{background:var(--amber)}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .num{color:#10180f}}
+.keys{display:flex;flex-wrap:wrap;gap:8px 18px;justify-content:center;margin:18px 0 6px;font-size:.82rem;color:var(--muted)}
+.keys span::before{content:"";display:inline-block;width:12px;height:12px;border-radius:4px;margin-right:6px;vertical-align:-1px;border:2px solid}
+.keys .k1::before{border-color:var(--blue);background:var(--blue-soft)}
+.keys .k2::before{border-color:var(--violet);background:var(--violet-soft)}
+.keys .k3::before{border:2px dashed var(--leaf);background:var(--leaf-soft)}
+.keys .k4::before{border-color:var(--leaf);background:var(--leaf-soft)}
+.keys .k5::before{border-color:var(--amber);background:var(--amber-soft)}
+.who{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:20px}
+.who ul{margin:6px 0 0;padding-left:1.2em;font-size:.92rem}
+.who li{margin-bottom:2px}
+
+/* 8 เส้นทางนักเรียน */
+.phases{display:grid;grid-template-columns:5fr 3fr 2fr 3fr;gap:12px}
+.phase{border-radius:14px;padding:14px 16px;border:1px solid var(--line)}
+.phase:nth-child(1){background:var(--blue-soft)}
+.phase:nth-child(2){background:var(--violet-soft)}
+.phase:nth-child(3){background:var(--amber-soft)}
+.phase:nth-child(4){background:var(--leaf-soft)}
+.phase h3{margin-bottom:8px}
+.phase ol{margin:0;padding:0;list-style:none}
+.phase li{display:flex;gap:10px;align-items:flex-start;margin-bottom:8px;font-size:.95rem;line-height:1.45}
+.phase li i{font-style:normal;flex:none;width:24px;height:24px;border-radius:99px;background:var(--card);border:1px solid var(--line);
+  font-size:.78rem;font-weight:700;text-align:center;line-height:22px}
+
+/* 9 โรงเรียน */
+.check{display:flex;gap:10px;align-items:flex-start;padding:12px 14px}
+.check::before{content:"✓";flex:none;width:24px;height:24px;border-radius:99px;background:var(--leaf);color:#fff;font-weight:700;
+  text-align:center;line-height:24px;font-size:.85rem}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .check::before{color:#10180f}}
+.check span{font-size:.95rem;line-height:1.5}
+.callout{margin-top:18px;border-left:4px solid var(--leaf);background:var(--leaf-soft);padding:12px 18px;border-radius:0 12px 12px 0;font-weight:500}
+
+/* 10 องค์กร */
+.vs{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:16px}
+.vs .self{background:var(--brick-soft)!important;border-color:transparent!important}
+.vs .via{background:var(--leaf-soft)!important;border-color:transparent!important}
+.flowline{font-weight:600;margin-top:6px;line-height:1.6}
+
+/* 11 Human oversight */
+.layers{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,170px),1fr));gap:10px;margin:8px 0 18px;counter-reset:l}
+.layer{border-radius:12px;padding:12px 14px;border:1px solid var(--line);background:var(--card);font-size:.92rem;line-height:1.5;position:relative}
+.layer b{display:block;margin-bottom:2px}
+.layer.ai{background:var(--violet-soft);border-color:var(--violet)}
+.principle{font-size:clamp(1.15rem,2.4vw,1.5rem);font-weight:700;line-height:1.45;max-width:30em;margin-bottom:.8em}
+
+/* หลักฐานจากงานวิจัย */
+.evid{display:grid;gap:8px;margin:6px 0 16px}
+.evid h3{margin:4px 0 0}
+.ev{display:grid;grid-template-columns:1.05fr 1fr 1.1fr;gap:14px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 14px;font-size:.88rem;line-height:1.55}
+main>.slide:nth-of-type(even) .ev{background:var(--paper)}
+.ev .lb{display:block;font-size:.74rem;font-weight:600;color:var(--leaf);margin-bottom:1px}
+.ev b{font-weight:600}
+.ev .tk{border-left:3px solid var(--leaf);padding-left:10px}
+/* 12 ค่าใช้จ่าย */
+.banner{background:var(--brick-soft);color:var(--brick);border-radius:12px;padding:12px 18px;font-weight:600;margin-bottom:16px}
+.cost h3{font-size:.98rem}
+.cost p{font-size:.84rem;color:var(--muted);line-height:1.5;margin-bottom:0}
+
+/* 13 ความเสี่ยง */
+.risks{display:grid;gap:8px}
+.risk{display:grid;grid-template-columns:210px 1fr;gap:14px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 16px}
+.risk>b{font-size:.96rem;line-height:1.5;padding-top:2px}
+.risk ul{margin:0;padding:0;list-style:none;font-size:.88rem;line-height:1.55}
+.risk li{margin-bottom:3px}
+.risk li .tag{margin-right:6px}
+
+
+/* 15 แผนทดลอง */
+.plan h3{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.plan ul{margin:6px 0 0;padding-left:1.2em;font-size:.9rem;line-height:1.55}
+.plan li{margin-bottom:4px}
+.plan li b{font-weight:600}
+
+/* 16 ก่อน/หลัง */
+.ba{display:grid;grid-template-columns:1fr auto 1fr;gap:16px;align-items:stretch}
+.ba .arrow{align-self:center;font-size:2rem;color:var(--muted)}
+.panel{border-radius:18px;padding:22px 24px}
+.panel.before{background:var(--brick-soft)}
+.panel.after{background:var(--leaf-soft)}
+.panel h3{font-size:1.15rem;margin-bottom:8px}
+.panel.before h3{color:var(--brick)}
+.panel.after h3{color:var(--leaf)}
+.panel ul{margin:0;padding-left:1.2em;font-size:.95rem}
+.panel li{margin-bottom:4px}
+.after-flow{display:flex;flex-wrap:wrap;gap:6px 8px;align-items:center;font-weight:600;margin-bottom:10px;line-height:1.5}
+.after-flow i{font-style:normal;color:var(--muted)}
+
+/* 17 อ้างอิง */
+.refs{display:grid;gap:8px;grid-template-columns:repeat(auto-fit,minmax(min(100%,330px),1fr));counter-reset:r}
+.ref{font-size:.82rem;line-height:1.5;background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:8px 12px;overflow-wrap:anywhere}
+.ref a{display:block;font-size:.76rem;margin-top:2px}
+details{margin-top:16px;background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:10px 16px}
+summary{cursor:pointer;font-weight:600}
+details ul{margin:8px 0 0;padding-left:1.2em;font-size:.84rem;line-height:1.6;columns:2 280px}
+.endnote{margin-top:18px;font-size:.82rem;color:var(--muted)}
+
+/* การนำทาง */
+.progress{position:fixed;top:0;left:0;right:0;height:4px;z-index:50;background:transparent}
+.progress span{display:block;height:100%;width:0;background:var(--leaf)}
+.dots{position:fixed;right:14px;top:50%;transform:translateY(-50%);z-index:40;display:flex;flex-direction:column;gap:2px}
+.dots a{display:block;padding:5px;text-decoration:none;position:relative}
+.dots a::before{content:"";display:block;width:9px;height:9px;border-radius:99px;background:var(--line);border:1px solid var(--muted);transition:background .2s}
+.dots a.on::before{background:var(--leaf);border-color:var(--leaf)}
+.dots a span{position:absolute;right:26px;top:50%;transform:translateY(-50%);white-space:nowrap;background:var(--ink);color:var(--paper);
+  padding:2px 10px;border-radius:6px;font-size:.78rem;opacity:0;pointer-events:none;transition:opacity .15s}
+.dots a:hover span,.dots a:focus-visible span{opacity:1}
+.count{position:fixed;left:16px;bottom:12px;z-index:40;font-size:.78rem;color:var(--muted);background:var(--card);
+  border:1px solid var(--line);border-radius:99px;padding:1px 12px}
+
+/* Responsive */
+@media (max-width:1180px){.dots{display:none}}
+@media (max-width:900px){
+  .chain{grid-template-columns:1fr}
+  .chain .arrow{transform:rotate(90deg);justify-self:center;line-height:1}
+  .phases{grid-template-columns:1fr 1fr}
+  .who,.vs{grid-template-columns:1fr}
+  .ba{grid-template-columns:1fr}
+  .ba .arrow{transform:rotate(90deg);justify-self:center;line-height:1}
+  .risk{grid-template-columns:1fr;gap:4px}
+  .ev{grid-template-columns:1fr;gap:8px}
+}
+@media (max-width:720px){
+  body{font-size:16px}
+  .frow{grid-template-columns:1fr;gap:8px;margin-bottom:0}
+  .frow>div:empty{display:none}
+  .frow .node{order:1}
+  .frow .side{order:2}
+  .down{grid-column:1}
+  .step:nth-child(1){height:78px}.step:nth-child(2){height:112px}.step:nth-child(3){height:146px}.step:nth-child(4){height:180px}
+  .step{padding:8px 6px;font-size:.8rem;overflow-wrap:anywhere}
+  .step span{display:none}
+  .stairs{gap:5px}
+  .phases{grid-template-columns:1fr}
+  .count,.hint{display:none}
+}
+@media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}.dots a::before,.dots a span{transition:none}}
+@media print{.dots,.progress,.count{display:none}.slide{min-height:auto;break-inside:avoid}}
+</style>
+</head>
+<body>
+<div class="progress" aria-hidden="true"><span id="bar"></span></div>
+<nav class="dots" id="dots" aria-label="สารบัญสไลด์"></nav>
+<div class="count" id="count" aria-hidden="true">1 / 16</div>
+
+<main>
+
+<!-- 1 ชื่อโครงการ -->
+<section class="slide hero" id="s1" data-title="ชื่อโครงการ">
+  <div class="wrap">
+    <p class="kicker">แนวคิดโครงการ</p>
+    <h1>Tonkla</h1>
+    <p class="lead">ความยากจนและข้อจำกัดทางเศรษฐกิจเป็นอุปสรรคสำคัญต่อโอกาสทางการศึกษาและการทำงานของเยาวชน Tonkla เสนอเส้นทางสี่ขั้นสำหรับนักเรียน</p>
+    <div class="stairs" role="list">
+      <div class="step" role="listitem">เรียนรู้<span>ทำแบบทดสอบ ได้ Roadmap</span></div>
+      <div class="step" role="listitem">ทดลองงาน<span>ทำงานจริงที่ผ่านการคัดกรอง</span></div>
+      <div class="step" role="listitem">สร้างรายได้<span>ได้ค่าตอบแทนและ Coins</span></div>
+      <div class="step" role="listitem">ค้นพบอาชีพ<span>Portfolio และโอกาสทำงาน</span></div>
+    </div>
+    <span class="status">สถานะ: แนวคิดโครงการ อยู่ในระยะออกแบบและวางแผนการทดลองนำร่อง</span>
+    <p class="hint">เลื่อนลง หรือกดปุ่มลูกศรซ้าย–ขวาบนคีย์บอร์ดเพื่อเปลี่ยนหัวข้อ</p>
+  </div>
+</section>
+
+<!-- 2 ปัญหา -->
+<section class="slide" id="s2" data-title="ปัญหา">
+  <div class="wrap">
+    <p class="kicker">ปัญหา</p>
+    <h2>เด็กจากครัวเรือนยากจนหลุดจากการเรียนมากขึ้น เมื่อเรียนสูงขึ้น</h2>
+    <div class="grid g3" style="margin-bottom:22px">
+      <div class="card"><h3>ใครประสบปัญหา</h3><p>เด็กและเยาวชนไทยจากครัวเรือนยากจน โดยเฉพาะวัยมัธยม</p><p class="small">ปีการศึกษา 2567: จากเด็กอายุ 3–14 ปีประมาณ 8.5 ล้านคน มากกว่า 3 ล้านคนอยู่ในครัวเรือนใต้เส้นความยากจน นักเรียนยากจนพิเศษประมาณ 1,348,735 คน มีรายได้ครัวเรือนเฉลี่ย 1,133 บาท/คน/เดือน (ประมาณ 37 บาท/วัน)</p><p class="src">ที่มา: กสศ. รายงานสถานการณ์ปี 2567</p></div>
+      <div class="card"><h3>เกิดขึ้นอย่างไร</h3><p>ยิ่งเรียนสูง ค่าใช้จ่ายและค่าเสียโอกาสยิ่งเพิ่ม ผลของฐานะจึงยิ่งชัด</p></div>
+      <div class="card"><h3>เกิดที่ไหน</h3><p>ทั่วประเทศไทย (ข้อมูลที่ใช้เป็นข้อมูลระดับประเทศ)</p></div>
+    </div>
+    <div class="bars">
+      <h3>อัตราเข้าเรียนตามวัย แยกตามฐานะ (ร้อยละ)</h3>
+      <div class="legend"><span class="lp">ครัวเรือนจนที่สุด</span><span class="lr">ครัวเรือนรวยที่สุด</span></div>
+      <div class="brow"><b>ประถม</b><div>
+        <div class="bar poor"><i style="width:92%">92</i></div>
+        <div class="bar rich"><i style="width:96%">96</i></div></div></div>
+      <div class="brow"><b>มัธยมต้น</b><div>
+        <div class="bar poor"><i style="width:76%">76</i></div>
+        <div class="bar rich"><i style="width:92%">92</i></div></div></div>
+      <div class="brow"><b>มัธยมปลาย</b><div>
+        <div class="bar poor"><i style="width:56%">56</i></div>
+        <div class="bar rich"><i style="width:89%">89</i></div></div></div>
+      <p class="src">ที่มา: UNICEF–NSO, Addressing the Gaps, หน้า 30–31</p>
+    </div>
+  </div>
+</section>
+
+<!-- 3 ตัวเลขสำคัญ -->
+<section class="slide" id="s3" data-title="ตัวเลขสำคัญ">
+  <div class="wrap">
+    <p class="kicker">ตัวเลขสำคัญ</p>
+    <h2>ยิ่งเรียนสูง ช่องว่างตามฐานะยิ่งชัด</h2>
+    <div class="grid g3">
+      <div class="card stat"><h3>ไม่ได้เรียนมัธยมปลาย</h3>
+        <div class="duo"><div><span>ครัวเรือนจนที่สุด</span><b>29%</b></div><div><span>ครัวเรือนรวยที่สุด</span><b>2%</b></div></div>
+        <p>กลุ่มจนที่สุดมีความเสี่ยงอยู่นอกโรงเรียนประมาณ 14.5 เท่า</p>
+        <p class="src">MICS / UNICEF Thailand Education Fact Sheets, หน้า 19–22</p></div>
+      <div class="card stat"><h3>สำเร็จมัธยมปลาย</h3>
+        <div class="duo"><div><span>กลุ่มจนที่สุด</span><b>42%</b></div><div><span>กลุ่มฐานะสูงสุด</span><b>96%</b></div></div>
+        <p>ต่างกัน 54 จุดร้อยละ</p>
+        <p class="src">UNICEF–NSO, หน้า 32</p></div>
+      <div class="card stat"><h3>สำเร็จอุดมศึกษา (ปี 2021)</h3>
+        <div class="duo"><div><span>ครอบครัวยากจน</span><b>5%</b></div><div><span>กลุ่มฐานะสูงสุด</span><b>52%</b></div></div>
+        <p>มากกว่ากันกว่า 10 เท่า</p>
+        <p class="src">World Bank: Structural Drivers of Inequality in Thailand, หน้า 28</p></div>
+    </div>
+    <p class="small" style="margin-top:16px">ข้อมูลเสริม: กสศ. ติดตามนักเรียนยากจนและยากจนพิเศษ 165,585 คน พบว่ามีเพียง 22,345 คน (13.49%) ที่ได้เข้าศึกษาต่ออุดมศึกษา (กสศ.: รายงานสถานการณ์ความเหลื่อมล้ำทางการศึกษา)</p>
+  </div>
+</section>
+
+<!-- 4 สาเหตุ -->
+<section class="slide" id="s4" data-title="สาเหตุ">
+  <div class="wrap">
+    <p class="kicker">สาเหตุ</p>
+    <h2>ไม่ได้มีแค่ค่าเทอม ต้นทุนแฝงและภาระครอบครัวทำให้เด็กเรียนต่อไม่ไหว</h2>
+    <div class="chain">
+      <div>
+        <div class="col-title">ปัญหา</div>
+        <div class="card problem" style="height:calc(100% - 28px)"><h3>เด็กจากครัวเรือนยากจนไม่ได้เรียนต่อ หรือเรียนไม่จบ</h3><p class="small">ฐานะครอบครัวเป็นต้นทาง</p></div>
+      </div>
+      <div class="arrow" aria-hidden="true">→</div>
+      <div>
+        <div class="col-title">สาเหตุ</div>
+        <div class="causes">
+          <div class="card cause"><h3>ค่าใช้จ่ายแฝง แม้เรียนฟรี</h3><p>ค่าเดินทาง อาหาร เครื่องแบบและอุปกรณ์ อินเทอร์เน็ต ค่าบำรุง บางคนค้างค่าธรรมเนียมจนไม่ได้รับวุฒิ ม.3</p></div>
+          <div class="card cause"><h3>ค่าเสียโอกาสจากการทำงาน</h3><p>สาเหตุที่เด็กยังไม่สมัครเรียนช่วงโควิด: ต้องช่วยพ่อแม่ทำงาน 57%*</p></div>
+          <div class="card cause"><h3>ภาระของครอบครัว</h3><p>นักเรียนยากจนพิเศษ: 44.43% มีผู้สูงอายุ · 27.30% มีคนว่างงาน · 12.41% มีสมาชิกพิการหรือเจ็บป่วยเรื้อรัง · 38.77% ไม่ได้อาศัยกับพ่อแม่</p></div>
+          <div class="card cause"><h3>การเข้าถึงทุน</h3><p>ทุนไม่ตรงเป้าและไปไม่ถึงผู้มีสิทธิ (ดูหน้าถัดไป)</p></div>
+          <div class="card cause"><h3>ทรัพยากรการเรียนรู้ที่บ้าน</h3><p>65% ของเด็กจนที่สุดไม่มีหนังสือเด็กเพิ่มเติมในบ้าน เทียบกับ 24% ของกลุ่มรวยที่สุด</p></div>
+        </div>
+      </div>
+      <div class="arrow" aria-hidden="true">→</div>
+      <div>
+        <div class="col-title">ผลกระทบ</div>
+        <div class="card effect" style="height:calc(100% - 28px)">
+          <p><b>ไม่ได้เรียน/เรียนไม่จบ</b><br><span class="small">29% เทียบ 2% ในมัธยมปลาย</span></p>
+          <p><b>ผลการเรียนต่ำกว่า</b><br><span class="small">ทักษะคณิตศาสตร์พื้นฐาน 54% เทียบ 75%</span></p>
+          <p><b>เข้าอุดมศึกษาได้น้อย</b><br><span class="small">13.49% ในกลุ่มที่ กสศ. ติดตาม</span></p>
+        </div>
+      </div>
+    </div>
+    <p class="src">*ข้อมูลช่วงโควิดเป็นการสำรวจเฉพาะช่วงวิกฤต ไม่ควรใช้แทนภาพรวมทั้งประเทศ ที่มา: กสศ. ระบบเฝ้าระวังเด็กหลุดจากการศึกษา · รายงานประจำปี กสศ. 2567 · UNICEF–NSO</p>
+  </div>
+</section>
+
+<!-- 5 ช่องว่างวิธีปัจจุบัน -->
+<section class="slide" id="s5" data-title="ช่องว่างของวิธีปัจจุบัน">
+  <div class="wrap">
+    <p class="kicker">ช่องว่างของวิธีแก้ปัจจุบัน</p>
+    <h2>ปัญหาไม่ได้อยู่แค่ “ไม่มีทุน” แต่คือทุนไปไม่ถึงคนที่ควรได้</h2>
+    <div class="grid g3" style="margin-bottom:18px">
+      <div class="card stat"><h3>การคัดกรอง</h3><div class="big">~3 ใน 4</div>
+        <p>ของโรงเรียนใช้เงินอุดหนุนแบบไม่เจาะจงเด็กยากจน</p></div>
+      <div class="card stat"><h3>การกระจายเงิน</h3><div class="big">15%</div>
+        <p>ของครัวเรือนรายงานว่าได้รับเป็นเงินสด และเงินที่ได้รับต่ำกว่าวงเงินตามแนวทาง</p></div>
+      <div class="card stat"><h3>การรับรู้สิทธิ</h3><div class="big">หลายครัวเรือน</div>
+        <p>ไม่ทราบว่ามีสิทธิได้รับเงินช่วยเหลือ</p></div>
+    </div>
+    <p class="src" style="margin-bottom:18px">ที่มา: การสำรวจติดตามงบโครงการเรียนฟรี 15 ปี, UNICEF–OBEC–Thammasat: Public Expenditure Tracking Survey</p>
+    <div class="grid g2">
+      <div class="card"><h3>สิ่งที่มีอยู่แล้ว</h3><p>นโยบายเรียนฟรี 15 ปี และทุนเสมอภาค นักเรียนที่ได้ทุนปีการศึกษา 2567 มีอัตราคงอยู่ในระบบ 97.88%</p>
+        <p class="small">ไม่ใช่การทดลองแบบสุ่ม แต่เป็นหลักฐานเชิงปฏิบัติว่าการลดข้อจำกัดทางการเงินช่วยรักษาเด็กไว้ในระบบได้ (กสศ.)</p></div>
+      <div class="card"><h3>แต่ความช่วยเหลือยังไม่ต่อเนื่องถึงปลายทาง</h3><p>นักเรียนด้อยโอกาสที่เคยได้รับความช่วยเหลือระดับมัธยมต้นเกือบ 150,000 คน มีเพียง 13.5% ที่ได้รับข้อเสนอเข้าเรียนผ่าน TCAS (ปี 2022)</p>
+        <p class="small">ที่มา: UNESCO GEM Report: Thailand</p></div>
+    </div>
+    <p class="callout" style="margin-top:20px">ช่องว่างที่โครงการมุ่งเติม: ระบบการศึกษาและการช่วยเหลือช่วยให้นักเรียนอยู่ในระบบและพัฒนาความรู้ได้ แต่อาจยังมีช่องว่างระหว่างการเรียนกับประสบการณ์ทำงาน Portfolio โอกาสที่เหมาะสม และเส้นทางสู่รายได้และอาชีพ Tonkla เสนอเป็นสะพานเชื่อมช่องว่างนี้</p>
+    <h3 style="margin-top:20px">แนวทางที่ Tonkla เสนอเพื่อตอบช่องว่าง</h3>
+    <div class="grid g4">
+      <div class="card"><b>การคัดกรอง</b><p class="small">โรงเรียนยืนยันตัวตนและคัดกรองความพร้อมของนักเรียน</p></div>
+      <div class="card"><b>การกระจายเงิน</b><p class="small">ค่าตอบแทนจ่ายผ่านระบบตามงานที่ทำสำเร็จ</p></div>
+      <div class="card"><b>การรับรู้สิทธิ</b><p class="small">แพลตฟอร์มแสดงงาน ทุน และโอกาสให้นักเรียนผ่านอาจารย์</p></div>
+      <div class="card"><b>ความต่อเนื่องสู่อาชีพ</b><p class="small">Roadmap, Portfolio และโอกาสฝึกงานเชื่อมสู่การทำงาน</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 6 Tonkla คืออะไร -->
+<section class="slide" id="s6" data-title="Tonkla คืออะไร">
+  <div class="wrap">
+    <p class="kicker">Tonkla คืออะไร</p>
+    <h2>เชื่อมการเรียนรู้ ทักษะ งานจริง รายได้ และโอกาสทางการศึกษาไว้ในเส้นทางเดียวกัน</h2>
+    <div class="pipe" aria-label="ขั้นตอนของนักเรียน">
+      <div class="pn"><b>นักเรียน</b><small>เข้าระบบเพื่อค้นหาโอกาสในการพัฒนาทักษะและสร้างรายได้</small></div><div class="pa">→</div>
+      <div class="pn"><b>โหลดแพลตฟอร์ม</b><small>เลือกสิ่งที่สนใจ</small></div><div class="pa">→</div>
+      <div class="pn"><b>หางาน</b><small>สิ่งที่ได้รับ</small></div><div class="pa">→</div>
+      <div class="pn"><b>เงิน + Coins</b><small>ผลตอบแทนจากงาน</small></div>
+    </div>
+    <div class="branch">
+      <div class="card"><h3>เงิน</h3><p>นำไปใช้จ่ายได้</p></div>
+      <div class="card"><h3>Coins</h3><p>สะสมหลักฐานการเรียนรู้ และเชื่อมต่อกับทุนการศึกษา สิ่งของ หรือกิจกรรม ตามเงื่อนไขที่กำหนดร่วมกับโรงเรียน</p></div>
+    </div>
+    <h3>Tonkla เชื่อมโยง</h3>
+    <div class="grid g4" style="margin-bottom:16px">
+      <div class="card"><b>นักเรียน</b><p class="small">ทำแบบทดสอบ ทำงานจริง</p></div>
+      <div class="card"><b>โรงเรียน/อาจารย์</b><p class="small">คัดกรอง ดูแล รับรอง</p></div>
+      <div class="card"><b>AI</b><p class="small">ประเมินทักษะ สร้าง Roadmap</p></div>
+      <div class="card"><b>บริษัท/องค์กร</b><p class="small">เสนอโจทย์งานและทุน</p></div>
+    </div>
+    <div class="gets"><span class="chip">ค่าตอบแทน</span><span class="chip">ทุนการศึกษา</span><span class="chip">การพัฒนาทักษะ</span><span class="chip">Portfolio</span><span class="chip">โอกาสในการทำงาน</span></div>
+    <p class="small" style="margin-top:10px">“เด็กไม่ได้รับเพียงเงิน แต่ได้รับ Portfolio ทักษะ และเส้นทางอาชีพ”</p>
+    <p class="small">เสนอให้ระบบ Coins เป็นกลไกสะสมหลักฐานการเรียนรู้และเชื่อมต่อกับโอกาส เช่น งาน ทุน หรือกิจกรรม โดยกำหนดเงื่อนไขร่วมกับโรงเรียนและหน่วยงานที่เกี่ยวข้อง และโรงเรียนดูแลไม่ให้งานกระทบเวลาเรียน</p>
+  </div>
+</section>
+
+<!-- 7 AI ทำงานอย่างไร -->
+<section class="slide" id="s7" data-title="AI ทำงานอย่างไร">
+  <div class="wrap">
+    <p class="kicker">AI ทำงานอย่างไร</p>
+    <h2>AI ประเมินและแนะนำ ส่วนโรงเรียน อาจารย์ และองค์กรเป็นผู้ดูแลและเสนอโอกาส</h2>
+
+    <div class="flow">
+      <div class="frow"><div></div>
+        <div class="node n-student"><b>นักเรียน</b><span>นักเรียนเข้าระบบเพื่อค้นหาโอกาสในการพัฒนาทักษะและสร้างรายได้</span></div><div></div></div>
+      <div class="frow"><div class="down" aria-hidden="true">↓</div></div>
+
+      <div class="frow"><div></div>
+        <div class="node"><b>แบบทดสอบ</b><span><i class="num">1</i>AI Agent สร้างแบบทดสอบ<br><i class="num">2</i>นักเรียนทำแบบทดสอบทักษะ</span></div><div></div></div>
+      <div class="frow"><div class="down" aria-hidden="true">↓</div></div>
+
+      <div class="frow"><div></div>
+        <div class="node n-ai"><b>AI Agent</b><span>รับผลแบบทดสอบของนักเรียน</span></div><div></div></div>
+      <div class="frow"><div class="down" aria-hidden="true">↓</div></div>
+
+      <div class="frow"><div></div>
+        <div class="node n-ai"><b>วิเคราะห์ทักษะ + สร้าง Roadmap</b><span><i class="num">3</i>ประเมินและส่ง Roadmap ให้นักเรียน</span></div><div></div></div>
+      <div class="frow"><div class="down" aria-hidden="true">↓</div></div>
+
+      <div class="frow"><div></div>
+        <div class="node n-db"><b>Database</b><span><i class="num">4</i>บันทึกข้อมูลลงฐานข้อมูล</span></div>
+        <div class="side sch"><b>โรงเรียน / อาจารย์</b><i class="num">5</i>ดูทักษะและ Coins ของนักเรียนจากระบบ</div></div>
+      <div class="frow"><div class="down" aria-hidden="true">↓</div></div>
+
+      <div class="frow">
+        <div class="side org"><b>องค์กร</b><i class="num o">6</i>เสนองาน/ทุนการศึกษา ผ่านอาจารย์ (โจทย์งาน + งบประมาณ + เกณฑ์ตรวจรับ)</div>
+        <div class="node n-out"><b>งาน / ทุน / โอกาส</b><span>นักเรียนตรวจสอบงาน/ทุนที่อาจารย์อัปเดต</span></div>
+        <div class="side sch"><b>โรงเรียน / อาจารย์</b><i class="num o">7</i>อัปเดตข้อมูลงาน/ทุน/Coins และตรวจว่างานเหมาะกับวัย</div></div>
+      <div class="frow"><div class="down" aria-hidden="true">↓</div></div>
+
+      <div class="frow"><div></div>
+        <div class="node"><b>ทดลองทำงานจริง</b><span>งานที่ผ่านการคัดกรองและตรวจคุณภาพ</span></div>
+        <div class="side sch"><b>โรงเรียน / อาจารย์</b>ดูแลไม่ให้กระทบเวลาเรียน ดูแลข้อร้องเรียนและความปลอดภัย</div></div>
+      <div class="frow"><div class="down" aria-hidden="true">↓</div></div>
+
+      <div class="frow">
+        <div class="side org"><b>องค์กร</b>ได้ผลงานจริงและตัวเลขรายงาน ESG</div>
+        <div class="node n-student"><b>Portfolio + รายได้ + เส้นทางอาชีพ</b><span>ผลลัพธ์ที่นักเรียนได้รับ</span></div>
+        <div class="side sch"><b>โรงเรียน / อาจารย์</b>รับรองทักษะและผลงาน บันทึกใน Portfolio</div></div>
+    </div>
+
+    <div class="keys" aria-label="คำอธิบายสี">
+      <span class="k1">นักเรียน</span><span class="k2">AI Agent</span><span class="k3">Database</span><span class="k4">โรงเรียน/อาจารย์</span><span class="k5">องค์กร</span>
+    </div>
+    <p class="small" style="text-align:center">หมายเลขในวงกลมคือลำดับขั้นการทำงานของระบบ</p>
+
+    <div class="who">
+      <div class="card"><h3>AI Agent ทำ</h3>
+        <ul><li>สร้างแบบทดสอบ</li><li>ประเมินผลทักษะ</li><li>สร้างและแนะนำ Roadmap</li><li>บันทึกข้อมูลลง Database</li></ul></div>
+      <div class="card"><h3>ครู / โรงเรียน / องค์กรทำ</h3>
+        <ul><li>อาจารย์ดูทักษะและ Coins อัปเดตข้อมูลงาน/ทุน</li><li>โรงเรียนยืนยันตัวตน คัดกรอง ตรวจความเหมาะสม รับรองผลงาน</li><li>องค์กรเสนองาน/ทุน กำหนดเกณฑ์ตรวจรับ</li></ul></div>
+    </div>
+    <p class="src">AI Agent / recommendation component ทำหน้าที่ช่วยวิเคราะห์ข้อมูลการเรียนรู้และสร้างคำแนะนำ ส่วนการตัดสินใจสำคัญเกี่ยวกับนักเรียนเป็นหน้าที่ของครูและโรงเรียน</p>
+  </div>
+</section>
+
+<!-- 8 เส้นทางของนักเรียน -->
+<section class="slide" id="s8" data-title="เส้นทางของนักเรียน">
+  <div class="wrap">
+    <p class="kicker">เส้นทางของนักเรียน</p>
+    <h2>จากเข้าระบบ ถึงค้นพบเส้นทางอาชีพของตัวเอง</h2>
+    <div class="phases">
+      <div class="phase"><h3>เรียนรู้</h3><ol>
+        <li><i>1</i>เข้าระบบ</li>
+        <li><i>2</i>ทำแบบทดสอบ</li>
+        <li><i>3</i>AI วิเคราะห์ทักษะ</li>
+        <li><i>4</i>ได้ Roadmap</li>
+        <li><i>5</i>พัฒนาทักษะ</li></ol></div>
+      <div class="phase"><h3>ทดลองงาน</h3><ol>
+        <li><i>6</i>ได้รับโอกาสที่เหมาะสม</li>
+        <li><i>7</i>ทดลองทำงานจริง</li></ol></div>
+      <div class="phase"><h3>สร้างรายได้</h3><ol>
+        <li><i>8</i>ได้ค่าตอบแทนและ Coins</li></ol></div>
+      <div class="phase"><h3>ค้นพบอาชีพ</h3><ol>
+        <li><i>9</i>สร้าง Portfolio</li>
+        <li><i>10</i>ค้นพบเส้นทางอาชีพ</li></ol></div>
+    </div>
+    <p class="small" style="margin-top:14px">เส้นทางที่ Tonkla ออกแบบให้นักเรียนแต่ละคน</p>
+    <div class="evid">
+      <h3>หลักฐานจากงานวิจัยที่สนับสนุนเส้นทางนี้</h3>
+      <div class="ev">
+        <div><span class="lb">หลักฐาน</span><b>Kluve et al. (2019)</b> งานทบทวนเชิงปริมาณของโครงการจ้างงานเยาวชน</div>
+        <div><span class="lb">ประเด็นที่พบ</span>ประสิทธิผลของโครงการจ้างงานเยาวชนขึ้นกับการออกแบบ โดยเฉพาะการสนับสนุนที่เหมาะกับผู้เข้าร่วมและบริการแบบบูรณาการ</div>
+        <div class="tk"><span class="lb">Tonkla ตอบโจทย์อย่างไร</span>ใช้แบบทดสอบ AI และครู สร้าง Roadmap เฉพาะบุคคล และรวมการฝึกทักษะ งานจริง และการเชื่อมโอกาสไว้ในบริการเดียว</div></div>
+      <div class="ev">
+        <div><span class="lb">หลักฐาน</span><b>ILO &amp; World Bank (2026)</b> ผลของโครงการตลาดแรงงานเชิงรุกต่อเยาวชน</div>
+        <div><span class="lb">ประเด็นที่พบ</span>การพัฒนาทักษะ บริการจัดหางาน และมาตรการสำหรับเยาวชนด้อยโอกาส ควรออกแบบและประเมินผลอย่างมีหลักฐาน</div>
+        <div class="tk"><span class="lb">Tonkla ตอบโจทย์อย่างไร</span>เชื่อมทักษะ งานจริง และโอกาสฝึกงานไว้ในเส้นทางเดียว โดยมีโรงเรียนดูแล และวางแผนประเมินผลผ่านโครงการนำร่อง</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- 9 โรงเรียน -->
+<section class="slide" id="s9" data-title="บทบาทของโรงเรียน">
+  <div class="wrap">
+    <p class="kicker">บทบาทของโรงเรียน (School Assurance)</p>
+    <h2>โรงเรียนและอาจารย์ช่วยสร้างความมั่นใจให้องค์กรและดูแลนักเรียน</h2>
+    <div class="grid g4">
+      <div class="card check"><span>ยืนยันตัวตน อายุ และสถานะนักเรียน</span></div>
+      <div class="card check"><span>คัดกรองความพร้อมก่อนรับงาน</span></div>
+      <div class="card check"><span>ตรวจสอบว่างานเหมาะสมกับวัย</span></div>
+      <div class="card check"><span>รับรองทักษะและผลงาน</span></div>
+      <div class="card check"><span>ดูแลไม่ให้กระทบเวลาเรียน</span></div>
+      <div class="card check"><span>ออกใบรับรองและบันทึกใน Portfolio</span></div>
+      <div class="card check"><span>ดูแลข้อร้องเรียนและความปลอดภัย</span></div>
+      <div class="card check"><span>มีครูหรืออาจารย์เป็นผู้ประสานงาน</span></div>
+    </div>
+    <div class="callout">Tonkla เชื่อมองค์กรกับเยาวชน โดยมีสถานศึกษาเป็นผู้รับรองความพร้อมและคุณภาพ</div>
+  </div>
+</section>
+
+<!-- 10 องค์กร -->
+<section class="slide" id="s10" data-title="สิ่งที่องค์กรได้รับ">
+  <div class="wrap">
+    <p class="kicker">สิ่งที่องค์กรได้รับ</p>
+    <h2>เสนอแนวทางเปลี่ยน CSR จากการให้ครั้งเดียว เป็นการสร้างรายได้ ทักษะ และโอกาสระยะยาว</h2>
+    <div class="grid g4">
+      <div class="card"><h3>CSR</h3><p class="small">สามารถสร้างรายได้ พัฒนาทักษะ และเปิดโอกาสทำงานจริงให้เยาวชนที่ขาดโอกาส</p></div>
+      <div class="card"><h3>ESG: Social</h3><p class="small">พัฒนาทุนมนุษย์ จ้างงานเยาวชน ลดความเหลื่อมล้ำ</p></div>
+      <div class="card"><h3>ESG: Governance</h3><p class="small">จ่ายเป็นธรรม โรงเรียนและครูร่วมตรวจสอบ คุ้มครองข้อมูล เกณฑ์ตรวจรับโปร่งใส มีระบบร้องเรียน</p></div>
+      <div class="card"><h3>SDGs</h3><p class="small">เชื่อมโยงกับ SDG 1, 4, 8 และ 10 (รายละเอียดด้านล่าง)</p></div>
+      <div class="card"><h3>Talent Pipeline</h3><p class="small">เปิดโอกาสให้องค์กรพบผู้สมัครฝึกงานหรือพนักงานจากผลงานจริง</p></div>
+      <div class="card"><h3>Employer Branding</h3><p class="small">สามารถสร้างภาพลักษณ์องค์กรที่สนับสนุนคนรุ่นใหม่อย่างเป็นรูปธรรม</p></div>
+      <div class="card"><h3>ผลงานจริง</h3><p class="small">มุ่งให้งานพื้นฐานขององค์กรสำเร็จ พร้อมสร้างผลกระทบทางสังคมในงบประมาณเดียวกัน</p></div>
+          </div>
+    <div class="grid g4" style="margin-top:16px">
+      <div class="card"><b>SDG 1 ขจัดความยากจน</b><p class="small">มุ่งลดผลของข้อจำกัดทางเศรษฐกิจของครัวเรือน โดยเสนอให้เยาวชนมีรายได้และทักษะที่ต่อยอดได้</p></div>
+      <div class="card"><b>SDG 4 การศึกษาที่มีคุณภาพ</b><p class="small">เชื่อมการเรียนรู้ ทักษะ และโอกาสทางการศึกษาไว้ในเส้นทางเดียว เพื่อลดการหลุดจากระบบ</p></div>
+      <div class="card"><b>SDG 8 งานที่มีคุณค่า</b><p class="small">เปิดโอกาสทำงานที่เหมาะกับวัย มีค่าตอบแทนเป็นธรรม ภายใต้การดูแลของโรงเรียน</p></div>
+      <div class="card"><b>SDG 10 ลดความเหลื่อมล้ำ</b><p class="small">มุ่งเยาวชนฐานะจำกัดที่มีช่องว่างด้านการจบการศึกษาและโอกาสทางอาชีพ</p></div>
+    </div>
+    <div class="vs">
+      <div class="card self"><h3>ถ้าองค์กรทำเอง</h3><p class="small">ต้องหาโรงเรียน คัดนักเรียน ออกแบบงาน ฝึกทักษะ ตรวจงาน จ่ายค่าตอบแทน และวัดผล ESG</p></div>
+      <div class="card via"><h3>เมื่อทำผ่าน Tonkla</h3><p class="small" style="margin-bottom:4px">องค์กรส่งเพียง <b>โจทย์งาน + งบประมาณ + เกณฑ์ตรวจรับ</b></p>
+        <p class="flowline small">Tonkla ดูแล: คัดกรอง → ฝึกทักษะ → จับคู่งาน → ตรวจคุณภาพ → จ่ายเงิน → รายงานผล</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 11 ความปลอดภัยและ Human Oversight -->
+<section class="slide" id="s11" data-title="ความปลอดภัยและ Human Oversight">
+  <div class="wrap">
+    <p class="kicker">ความปลอดภัยและ Human Oversight</p>
+    <p class="principle">ผลของ AI ไม่ควรถูกเชื่อโดยอัตโนมัติ ต้องมีมนุษย์ตรวจสอบก่อนนำไปใช้กับนักเรียน</p>
+    <div class="layers">
+      <div class="layer ai"><b>AI เสนอ</b>ผลประเมินทักษะและ Roadmap</div>
+      <div class="layer"><b>อาจารย์ดูผล</b>เห็นทักษะและ Coins อัปเดตข้อมูลงาน/ทุน</div>
+      <div class="layer"><b>โรงเรียนรับรอง</b>ยืนยันตัวตน คัดกรอง ตรวจความเหมาะสม รับรองผลงาน</div>
+      <div class="layer"><b>องค์กรกำหนดเกณฑ์</b>โจทย์งานและเกณฑ์ตรวจรับที่โปร่งใส</div>
+      <div class="layer"><b>Tonkla ตรวจคุณภาพ</b>ก่อนจ่ายเงินและรายงานผล</div>
+      <div class="layer"><b>ร้องเรียนและติดตามผล</b>มีระบบรับข้อร้องเรียน</div>
+    </div>
+    <div class="evid">
+      <h3>หลักฐานจากงานวิจัยและแนวทางสากลที่สนับสนุนหลักการนี้</h3>
+      <div class="ev">
+        <div><span class="lb">หลักฐาน</span><b>Baker &amp; Hawn (2022)</b> ทบทวนงานวิจัยเรื่องอคติของอัลกอริทึมทางการศึกษา</div>
+        <div><span class="lb">ประเด็นที่พบ</span>ระบบ AI ทางการศึกษาอาจตัดสินไม่เป็นธรรมต่อบางกลุ่มผู้เรียน จึงต้องประเมินความเป็นธรรมและมีมนุษย์กำกับ</div>
+        <div class="tk"><span class="lb">Tonkla ตอบโจทย์อย่างไร</span>ผลของ AI เป็นข้อเสนอแนะ ครูทบทวนและแก้ไขได้ นักเรียนขอให้ทบทวนผลได้ และตรวจอคติในการทดลองนำร่อง</div></div>
+      <div class="ev">
+        <div><span class="lb">หลักฐาน</span><b>UNESCO (Miao et al., 2021)</b> แนวทางสำหรับผู้กำหนดนโยบายเรื่อง AI และการศึกษา</div>
+        <div><span class="lb">ประเด็นที่พบ</span>การใช้ AI ในการศึกษามีทั้งโอกาสและความเสี่ยง ต้องมีธรรมาภิบาล ความครอบคลุม ความเสมอภาค และการกำกับโดยครู</div>
+        <div class="tk"><span class="lb">Tonkla ตอบโจทย์อย่างไร</span>AI สนับสนุนครู ไม่แทนที่ครู และมุ่งที่เยาวชนฐานะจำกัด</div></div>
+      <div class="ev">
+        <div><span class="lb">หลักฐาน</span><b>UNICEF</b> แนวทางเรื่อง AI และเด็ก</div>
+        <div><span class="lb">ประเด็นที่พบ</span>ระบบ AI ที่เกี่ยวข้องกับเด็กต้องคำนึงถึงความปลอดภัย ความเป็นส่วนตัว ความเป็นธรรมไม่เลือกปฏิบัติ ความโปร่งใส ความรับผิดชอบ และสิทธิเด็ก</div>
+        <div class="tk"><span class="lb">Tonkla ตอบโจทย์อย่างไร</span>กรองงานที่ไม่เหมาะสม เก็บข้อมูลเท่าที่จำเป็น และมีครูเป็นผู้กำกับดูแล</div></div>
+    </div>
+    <div class="grid g3">
+      <div class="card"><h3>คุ้มครองข้อมูลส่วนบุคคล</h3><p class="small">ออกแบบให้สอดคล้องกับ พ.ร.บ.คุ้มครองข้อมูลส่วนบุคคล พ.ศ. 2562 เก็บเท่าที่จำเป็น กำหนดสิทธิ์ตามบทบาท และกำหนดระยะเวลาเก็บข้อมูล</p></div>
+      <div class="card"><h3>การจ้างงานเยาวชน</h3><p class="small">การเข้าร่วมและการจับคู่โอกาสต้องเป็นไปตามกฎหมายคุ้มครองแรงงาน เด็กและเยาวชน และการศึกษา (พ.ร.บ.คุ้มครองแรงงาน พ.ศ. 2541) พร้อมกรองงานที่ไม่เหมาะสมก่อนเสนอให้นักเรียน</p></div>
+      <div class="card"><h3>ค่าตอบแทนที่เป็นธรรม</h3><p class="small">ค่าตอบแทนโปร่งใส ตรวจรับงานตามเกณฑ์ที่ตกลงล่วงหน้า และมีช่องทางร้องเรียน</p></div>
+      <div class="card"><h3>การทบทวนผลของ AI</h3><p class="small">นักเรียนและครูขอให้ทบทวนผลประเมินได้ นักเรียนปฏิเสธโอกาสที่ไม่เหมาะสมได้ ใช้ดุลยพินิจของอาจารย์และโรงเรียนเป็นหลัก และบันทึกเหตุผลเพื่อปรับปรุงระบบ</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 12 ค่าใช้จ่าย -->
+<section class="slide" id="s12" data-title="ค่าใช้จ่าย">
+  <div class="wrap">
+    <p class="kicker">ค่าใช้จ่าย</p>
+    <h2>กรอบการวางแผนค่าใช้จ่ายของโครงการ แบ่งออกเป็นหมวดหลัก</h2>
+    <div class="grid g3">
+      <div class="card cost"><h3>แพลตฟอร์มและระบบ</h3><p>AI Agent, Database และระบบจัดการข้อมูล รวมถึงการดูแลรักษาระบบและความปลอดภัยทางไซเบอร์</p></div>
+      <div class="card cost"><h3>การคัดกรองและประสานงานโรงเรียน</h3><p>การยืนยันตัวตน การคัดกรองความพร้อม การประสานงาน และการอบรมครูผู้ประสานงาน</p></div>
+      <div class="card cost"><h3>การฝึกทักษะ</h3><p>แบบทดสอบ Roadmap และการพัฒนาทักษะ</p></div>
+      <div class="card cost"><h3>การจับคู่งานและตรวจคุณภาพ</h3><p>การออกแบบโจทย์ การจับคู่งาน และการตรวจสอบคุณภาพโดยมนุษย์</p></div>
+      <div class="card cost"><h3>ค่าตอบแทนเยาวชน</h3><p>ค่าตอบแทนจากงานที่นักเรียนทำ</p></div>
+      <div class="card cost"><h3>ทุนการศึกษาและอุปกรณ์</h3><p>ทุนและอุปกรณ์ที่สนับสนุนการเรียนรู้</p></div>
+      <div class="card cost"><h3>ระบบร้องเรียนและติดตามผล</h3><p>การดูแลข้อร้องเรียนและความปลอดภัยของนักเรียน</p></div>
+      <div class="card cost"><h3>การคุ้มครองข้อมูลส่วนบุคคล</h3><p>ระบบและกระบวนการดูแลข้อมูลนักเรียน</p></div>
+      <div class="card cost"><h3>รายงานผลและ Dashboard</h3><p>การติดตามผลลัพธ์และการจัดทำรายงานสำหรับองค์กร</p></div>
+      <div class="card cost"><h3>การประเมินผลและการปฏิบัติตามกฎหมาย</h3><p>การประเมินโครงการนำร่อง และการตรวจสอบความสอดคล้องกับกฎหมายที่เกี่ยวข้อง</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 13 ความเสี่ยง -->
+<section class="slide" id="s13" data-title="ความเสี่ยง">
+  <div class="wrap">
+    <p class="kicker">ความเสี่ยง</p>
+    <h2>ความเสี่ยงหลักและแนวทางลด</h2>
+    <div class="risks">
+      <div class="risk"><b>AI ประเมินผิด</b><ul><li>ครูเห็นผลทักษะและ Coins ในระบบ · โรงเรียนรับรองทักษะและผลงาน · ครูทบทวนและแก้ไขผลประเมินได้ · นักเรียนขอให้ทบทวนผลได้ · ประเมินซ้ำเมื่อมีข้อมูลใหม่ · ทดสอบความแม่นยำและอคติก่อนขยายผล (Baker &amp; Hawn, 2022)</li></ul></div>
+      <div class="risk"><b>AI แนะนำไม่เหมาะสม</b><ul><li>ตรวจว่างานเหมาะกับวัย · มีครูผู้ประสานงาน · Roadmap เป็นข้อเสนอแนะให้ครูและนักเรียนพิจารณา ไม่ใช่คำสั่ง</li></ul></div>
+      <div class="risk"><b>ความเป็นส่วนตัวและข้อมูลส่วนบุคคล</b><ul><li>เก็บเท่าที่จำเป็น · กำหนดสิทธิ์เข้าถึงตามบทบาท · กำหนดระยะเวลาเก็บและการลบข้อมูล · แจ้งนโยบายความเป็นส่วนตัว · สอดคล้องกับ พ.ร.บ.คุ้มครองข้อมูลส่วนบุคคล พ.ศ. 2562</li></ul></div>
+      <div class="risk"><b>ความปลอดภัยของนักเรียน</b><ul><li>ยืนยันตัวตน อายุ และสถานะ · ดูแลข้อร้องเรียนและความปลอดภัย · มีครูผู้ประสานงาน · มีช่องทางรายงานเหตุ</li></ul></div>
+      <div class="risk"><b>งานไม่เหมาะสมกับวัย</b><ul><li>โรงเรียนตรวจสอบก่อนรับงาน · กรองประเภทงานต้องห้ามสำหรับเยาวชน · จำกัดประเภทงานและเวลาทำงานตามกฎหมายคุ้มครองแรงงาน</li></ul></div>
+      <div class="risk"><b>การเอาเปรียบแรงงานเยาวชน</b><ul><li>ค่าตอบแทนเป็นธรรม · เกณฑ์ตรวจรับโปร่งใส · มีระบบร้องเรียน · แจ้งผู้ปกครองตามความเหมาะสม · สอดคล้องกับ พ.ร.บ.คุ้มครองแรงงาน พ.ศ. 2541</li></ul></div>
+      <div class="risk"><b>งานกระทบการเรียน</b><ul><li>โรงเรียนดูแลเวลาเรียน · กำหนดชั่วโมงงานต่อสัปดาห์ร่วมกับโรงเรียน</li></ul></div>
+      <div class="risk"><b>อคติของอัลกอริทึม</b><ul><li>ติดตามผลลัพธ์ที่ไม่เท่าเทียมระหว่างกลุ่มนักเรียน · ครูและโรงเรียนกำกับดูแล · นักเรียนขอให้ทบทวนผลได้ (Baker &amp; Hawn, 2022)</li></ul></div>
+      <div class="risk"><b>องค์กรเสนอโอกาสที่ไม่เหมาะสม</b><ul><li>คัดกรององค์กรพันธมิตร · กำกับดูแลระหว่างทำงาน · มีช่องทางรายงานและทบทวน</li></ul></div>
+      <div class="risk"><b>คุณภาพงาน</b><ul><li>คัดกรองและฝึกทักษะก่อนจับคู่งาน · Tonkla ตรวจคุณภาพ · มีเกณฑ์ตรวจรับจากองค์กร</li></ul></div>
+    </div>
+  </div>
+</section>
+
+<!-- 15 แผนการทดลองในอนาคต -->
+<section class="slide" id="s15" data-title="แผนการทดลองในอนาคต">
+  <div class="wrap">
+    <p class="kicker">แผนการทดลองในอนาคต</p>
+    <h2>โครงการนำร่องที่เสนอ เพื่อทดสอบกับนักเรียน ครู และองค์กร</h2>
+    <div class="banner" style="background:var(--amber-soft);color:var(--amber)">ประเด็นที่เสนอให้ประเมินในโครงการนำร่อง</div>
+    <div class="grid g4">
+      <div class="card plan"><h3>นักเรียน</h3><ul>
+        <li>ความง่ายในการใช้งาน</li><li>การมีส่วนร่วม</li><li>ความพึงพอใจ</li><li>การค้นพบทักษะ</li><li>ความมั่นใจ</li><li>ความรู้เรื่องอาชีพ</li><li>การทำ Portfolio สำเร็จ</li><li>การเข้าถึงโอกาส</li><li>ผลการเรียนรู้</li><li>รายได้/ค่าตอบแทนตามความเหมาะสม</li><li>ความก้าวหน้าด้านอาชีพ</li></ul></div>
+      <div class="card plan"><h3>โรงเรียนและครู</h3><ul>
+        <li>ภาระงานของครู</li><li>ความพึงพอใจของครู</li><li>ความปลอดภัย</li><li>ความเหมาะสมของงาน</li><li>ผลกระทบต่อการเรียน</li><li>คุณภาพผลงานของนักเรียน</li></ul></div>
+      <div class="card plan"><h3>องค์กร</h3><ul>
+        <li>คุณภาพของผู้สมัคร</li><li>ประโยชน์ของโปรไฟล์ทักษะ</li><li>คุณภาพการจับคู่</li><li>ความพร้อมในการร่วมโครงการ</li></ul></div>
+      <div class="card plan"><h3>ระบบ</h3><ul>
+        <li>ความแม่นยำของคำแนะนำจาก AI</li><li>การจับคู่ที่ผิดพลาด</li><li>อคติ ความเป็นธรรม และผลลัพธ์ที่ไม่เท่าเทียมระหว่างกลุ่ม</li><li>เหตุการณ์ด้านความปลอดภัย</li><li>อัตราการทำงานสำเร็จ</li></ul></div>
+    </div>
+    <p class="small" style="margin-top:14px">วิธีการ: นำร่องในโรงเรียนกลุ่มเล็ก เก็บข้อมูลจากระบบ แบบสอบถาม และการสัมภาษณ์ครู นักเรียน และองค์กร เทียบผลประเมินของ AI กับการประเมินของครู</p>
+  </div>
+</section>
+
+<!-- 16 สิ่งที่จะเปลี่ยนแปลง -->
+<section class="slide" id="s16" data-title="สิ่งที่จะเปลี่ยนแปลง">
+  <div class="wrap">
+    <p class="kicker">สิ่งที่จะเปลี่ยนแปลง</p>
+    <h2>จากโอกาสที่เข้าถึงยาก สู่เส้นทางที่เยาวชนสร้างเองได้</h2>
+    <div class="ba">
+      <div class="panel before"><h3>ปัจจุบัน</h3>
+        <p>เยาวชนที่มีข้อจำกัดด้านฐานะเข้าถึงโอกาสทางการศึกษาและการทำงานได้ยาก</p>
+        <ul><li>สำเร็จมัธยมปลาย 42% เทียบ 96%</li><li>เข้าอุดมศึกษา 13.49% ในกลุ่มที่ กสศ. ติดตาม</li><li>ทุนไม่ตรงเป้าหรือไปไม่ถึงผู้มีสิทธิ</li></ul></div>
+      <div class="arrow" aria-hidden="true">→</div>
+      <div class="panel after"><h3>หลังใช้แนวคิด Tonkla</h3>
+        <div class="after-flow"><span>พัฒนาทักษะ</span><i>→</i><span>ทดลองทำงาน</span><i>→</i><span>มีรายได้</span><i>→</i><span>สร้าง Portfolio</span><i>→</i><span>ค้นพบเส้นทางอาชีพ</span></div>
+        <p class="small">ภาพเป้าหมายของโครงการ</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 17 แหล่งอ้างอิง -->
+<section class="slide" id="s17" data-title="แหล่งอ้างอิง">
+  <div class="wrap">
+    <p class="kicker">แหล่งอ้างอิง</p>
+    <h2>เอกสารอ้างอิง</h2>
+    <div class="refs">
+      <div class="ref">OECD. (2022). <i>Pathways to Professions: Understanding Higher Vocational and Professional Tertiary Education Systems.</i><a href="https://www.oecd.org/en/publications/pathways-to-professions_a81152f4-en/full-report/component-8.html" target="_blank" rel="noopener">oecd.org</a></div>
+      <div class="ref">International Labour Organization. (2017). <i>Work-based Learning, Including Quality Apprenticeships.</i><a href="https://www.ilo.org/resource/work-based-learning-including-quality-apprenticeships" target="_blank" rel="noopener">ilo.org</a></div>
+      <div class="ref">International Labour Organization. (2024). <i>Skills for Youth Employment.</i><a href="https://www.ilo.org/skills-youth-employment" target="_blank" rel="noopener">ilo.org</a></div>
+      <div class="ref">ตลาดหลักทรัพย์แห่งประเทศไทย. <i>SET Sustainability.</i><a href="https://www.set.or.th/en/about/sustainability-development/overview" target="_blank" rel="noopener">set.or.th</a></div>
+      <div class="ref">สำนักงานคณะกรรมการกำกับหลักทรัพย์และตลาดหลักทรัพย์. <i>Sustainable Finance.</i><a href="https://www.sec.or.th/EN/Pages/SUSTAINABLEFINANCE.aspx" target="_blank" rel="noopener">sec.or.th</a></div>
+      <div class="ref">United Nations. <i>SDG 4: Quality Education.</i><a href="https://sdgs.un.org/goals/goal4" target="_blank" rel="noopener">sdgs.un.org/goals/goal4</a></div>
+      <div class="ref">United Nations. <i>SDG 8: Decent Work and Economic Growth.</i><a href="https://sdgs.un.org/goals/goal8" target="_blank" rel="noopener">sdgs.un.org/goals/goal8</a></div>
+      <div class="ref">United Nations. <i>SDG 10: Reduced Inequalities.</i><a href="https://sdgs.un.org/goals/goal10" target="_blank" rel="noopener">sdgs.un.org/goals/goal10</a></div>
+      <div class="ref">Global Reporting Initiative. <i>GRI 404: Training and Education.</i><a href="https://www.globalreporting.org/publications/documents/english/gri-404-training-and-education-2016/" target="_blank" rel="noopener">globalreporting.org</a></div>
+      <div class="ref">Global Reporting Initiative. <i>GRI 413: Local Communities.</i><a href="https://www.globalreporting.org/publications/documents/english/gri-413-local-communities-2016/" target="_blank" rel="noopener">globalreporting.org</a></div>
+      <div class="ref">กระทรวงการอุดมศึกษา วิทยาศาสตร์ วิจัยและนวัตกรรม. (2565). โครงการส่งเสริมสหกิจศึกษาและการศึกษาเชิงบูรณาการกับการทำงาน (CWIE).<a href="https://www.mhesi.go.th/index.php/flagship-project/6820-CWIE.html" target="_blank" rel="noopener">mhesi.go.th</a></div>
+      <div class="ref">สำนักงานคณะกรรมการการอาชีวศึกษา. ระบบฐานข้อมูลความต้องการกำลังคนเพื่อการจัดการอาชีวศึกษาระบบทวิภาคี (DVE-PPP).<a href="https://dve-ppp.vec.go.th/ppp/index.php" target="_blank" rel="noopener">dve-ppp.vec.go.th</a></div>
+      <div class="ref">Baker, R. S., &amp; Hawn, A. (2022). Algorithmic bias in education. <i>International Journal of Artificial Intelligence in Education, 32</i>(4), 1052–1092.<a href="https://doi.org/10.1007/s40593-021-00285-9" target="_blank" rel="noopener">doi.org/10.1007/s40593-021-00285-9</a></div>
+      <div class="ref">Kluve, J., Puerto, S., Robalino, D., Romero, J. M., Rother, F., Stöterau, J., Weidenkaff, F., &amp; Witte, M. (2019). Do youth employment programs improve labor market outcomes? A quantitative review. <i>World Development, 114</i>, 237–253.<a href="https://doi.org/10.1016/j.worlddev.2018.10.004" target="_blank" rel="noopener">doi.org/10.1016/j.worlddev.2018.10.004</a></div>
+      <div class="ref">Miao, F., Holmes, W., Huang, R., &amp; Zhang, H. (2021). <i>AI and education: Guidance for policy-makers.</i> UNESCO.<a href="https://doi.org/10.54675/PCSP7350" target="_blank" rel="noopener">doi.org/10.54675/PCSP7350</a><a href="https://www.unesco.org/en/articles/ai-and-education-guidance-policy-makers" target="_blank" rel="noopener">unesco.org/en/articles/ai-and-education-guidance-policy-makers</a></div>
+      <div class="ref">UNICEF Innocenti. <i>Guidance on AI and children.</i><a href="https://www.unicef.org/innocenti/reports/policy-guidance-ai-children" target="_blank" rel="noopener">unicef.org/innocenti/reports/policy-guidance-ai-children</a></div>
+      <div class="ref">ILO &amp; World Bank. (2026). <i>The impact of active labour market programmes on youth.</i><a href="https://www.ilo.org/publications/impact-active-labour-market-programmes-youth" target="_blank" rel="noopener">ilo.org/publications/impact-active-labour-market-programmes-youth</a></div>
+      <div class="ref">United Nations. <i>SDG 1: No Poverty.</i><a href="https://sdgs.un.org/goals/goal1" target="_blank" rel="noopener">sdgs.un.org/goals/goal1</a></div>
+      <div class="ref">พระราชบัญญัติคุ้มครองแรงงาน พ.ศ. 2541 (และที่แก้ไขเพิ่มเติม). กระทรวงแรงงาน.<a href="https://www.mol.go.th/en/labour-law" target="_blank" rel="noopener">mol.go.th/en/labour-law</a></div>
+      <div class="ref">พระราชบัญญัติคุ้มครองข้อมูลส่วนบุคคล พ.ศ. 2562. สำนักงานคณะกรรมการคุ้มครองข้อมูลส่วนบุคคล.<a href="https://www.pdpc.or.th" target="_blank" rel="noopener">pdpc.or.th</a></div>
+    </div>
+    <details>
+      <summary>แหล่งข้อมูลสถิติที่ใช้ในการนำเสนอ</summary>
+      <ul>
+        <li>UNICEF Thailand Education Fact Sheets</li>
+        <li>UNICEF–NSO, Addressing the Gaps</li>
+        <li>OECD, PISA 2022: Thailand</li>
+        <li>World Bank, Structural Drivers of Inequality in Thailand</li>
+        <li>กสศ., รายงานสถานการณ์ความเหลื่อมล้ำทางการศึกษา</li>
+        <li>กสศ., รายงานสถานการณ์ปี 2567 และรายงานประจำปี 2567</li>
+        <li>กสศ., ค่าธรรมเนียมการศึกษาและเด็กยากจน</li>
+        <li>กสศ., ระบบเฝ้าระวังเด็กหลุดจากการศึกษา</li>
+        <li>กสศ., ผลของทุนแบบมุ่งเป้า</li>
+        <li>EEF Annual Report 2021</li>
+        <li>UNICEF–OBEC–Thammasat, Public Expenditure Tracking Survey</li>
+        <li>UNESCO, GEM Report: Thailand</li>
+        <li>UNESCO, Global Education Monitoring Report 2026</li>
+      </ul>
+    </details>
+    <p class="endnote">รายละเอียดเพิ่มเติมอยู่ใน project.md</p>
+  </div>
+</section>
+
+</main>
+
+<script>
+(function(){
+  var slides = Array.prototype.slice.call(document.querySelectorAll('main > .slide'));
+  var dots = document.getElementById('dots');
+  var bar = document.getElementById('bar');
+  var count = document.getElementById('count');
+  var links = slides.map(function(s, i){
+    var a = document.createElement('a');
+    a.href = '#' + s.id;
+    a.setAttribute('aria-label', s.getAttribute('data-title'));
+    var t = document.createElement('span');
+    t.textContent = s.getAttribute('data-title');
+    a.appendChild(t);
+    dots.appendChild(a);
+    return a;
+  });
+  var current = 0;
+  function setCurrent(i){
+    current = i;
+    links.forEach(function(l, k){ l.classList.toggle('on', k === i); });
+    count.textContent = (i + 1) + ' / ' + slides.length;
+  }
+  if ('IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if (e.isIntersecting) setCurrent(slides.indexOf(e.target));
+      });
+    }, {rootMargin: '-45% 0px -45% 0px'});
+    slides.forEach(function(s){ io.observe(s); });
+  }
+  setCurrent(0);
+  function onScroll(){
+    var h = document.documentElement.scrollHeight - window.innerHeight;
+    bar.style.width = (h > 0 ? (window.scrollY / h) * 100 : 0) + '%';
+  }
+  window.addEventListener('scroll', onScroll, {passive: true});
+  onScroll();
+  document.addEventListener('keydown', function(e){
+    if (e.altKey || e.ctrlKey || e.metaKey) return;
+    var tag = (e.target && e.target.tagName) || '';
+    if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SUMMARY') return;
+    var next = null;
+    if (e.key === 'ArrowRight') next = Math.min(current + 1, slides.length - 1);
+    if (e.key === 'ArrowLeft') next = Math.max(current - 1, 0);
+    if (next !== null) {
+      e.preventDefault();
+      slides[next].scrollIntoView({behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'});
+    }
+  });
+})();
+</script>
+</body>
+</html>
